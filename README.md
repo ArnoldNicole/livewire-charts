@@ -16,31 +16,33 @@ https://github.com/asantibanez/livewire-charts-demo
 You can install the package via composer:
 
 ```bash
-composer require asantibanez/livewire-charts
+composer require arnoldwamae/livewire-charts
 ```
 
-Next, you must export the package public scripts. To do this run 
+Next, you must export the package public scripts. To do this run
 
 ```bash
 php artisan livewire-charts:install
-```         
+```
 
-This command will export a `vendor/livewire-charts` folder under the `public` directory of your app which is used 
+This command will export a `vendor/livewire-charts` folder under the `public` directory of your app which is used
 by the `@livewireChartsScripts` directive. More on this topic later.
 
 ## Requirements
 
 This package requires the following packages/libraries to work:
+
 - `Laravel Livewire v3` (https://livewire.laravel.com/)
 - `Apex Charts` (https://apexcharts.com/)
 
 Please follow each package/library instructions on how to set them properly in your project.
 
->Note: At the moment, `Apex Charts` is only supported for drawing charts.  
+> Note: At the moment, `Apex Charts` is only supported for drawing charts.
 
 ## Usage
 
 Livewire Charts supports out of the box the following types of charts
+
 - Line/Multi Line Chart (`LivewireLineChart` component)
 - Pie Chart (`LivewirePieChart` component)
 - Column/Multi Line Chart (`LivewireColumnChart` component)
@@ -49,9 +51,10 @@ Livewire Charts supports out of the box the following types of charts
 - Tree Map Chart (`LivewireTreeMapChart` component)
 - Radial Chart (`LivewireRadialChart` component)
 
-Each one comes with its own "model" class that allows you to define the chart's data and render behavior. 
-- `LivewireLineChart` uses `LineChartModel` to set up data points, markers, events and other ui customizations. 
-- `LivewirePieChart` uses `PieChartModel` to set up data slices, events and other ui customizations. 
+Each one comes with its own "model" class that allows you to define the chart's data and render behavior.
+
+- `LivewireLineChart` uses `LineChartModel` to set up data points, markers, events and other ui customizations.
+- `LivewirePieChart` uses `PieChartModel` to set up data slices, events and other ui customizations.
 - `LivewireColumnChart` uses `ColumnChartModel` to set up data columns, events and other ui customizations.
 - `LivewireAreaChart` uses `AreaChartModel` to set up data points, events and other ui customizations.
 - `LivewireRadarChart` uses `RadarChartModel` to set up data points, events and other ui customizations.
@@ -59,41 +62,42 @@ Each one comes with its own "model" class that allows you to define the chart's 
 - `LivewireRadialChart` uses `RadialChartModel` to set up data bars, events and other ui customizations.
 
 For example, to render a column chart, we can create an instance of `ColumnChartModel` and add some data to it
+
 ```php
-$columnChartModel = 
+$columnChartModel =
     (new ColumnChartModel())
         ->setTitle('Expenses by Type')
         ->addColumn('Food', 100, '#f6ad55')
         ->addColumn('Shopping', 200, '#fc8181')
         ->addColumn('Travel', 300, '#90cdf4')
     ;
-``` 
+```
 
->Note: Chart model methods are chainable 💪 
+> Note: Chart model methods are chainable 💪
 
-With `$columnChartModel` at hand, we pass it to our `LivewireColumnChart` component in our Blade template. 
+With `$columnChartModel` at hand, we pass it to our `LivewireColumnChart` component in our Blade template.
 
 ```blade
 <livewire:livewire-column-chart
     {{-- key="{{ $columnChartModel->reactiveKey() }}" --}}
     :column-chart-model="$columnChartModel"
 />
-``` 
->Note: Optionally add "key" to enable props reactivity if needed 💪
+```
+
+> Note: Optionally add "key" to enable props reactivity if needed 💪
 
 Next, include the `@livewireChartsScripts` directive next to your other app scripts
 
 ```html
-@livewireScripts
-@livewireChartsScripts
+@livewireScripts @livewireChartsScripts
 ```
 
 And that's it! You have a beautiful rendered chart in seconds. 👌
 
 ![column chart example](https://github.com/asantibanez/livewire-charts/raw/master/column-chart-example.png)
 
->Note: You can use these charts inside other Livewire components too. Just render them in your Blade template and you
-are good to go. 👍 
+> Note: You can use these charts inside other Livewire components too. Just render them in your Blade template and you
+> are good to go. 👍
 
 ## LivewireCharts facade
 
@@ -113,41 +117,41 @@ LivewireCharts::radialChartModel();
 
 ## Enabling Interactions
 
-To enable click events, you must use the `with[XXX]ClickEvent($eventName)` method present in every model class and 
+To enable click events, you must use the `with[XXX]ClickEvent($eventName)` method present in every model class and
 define a custom `$eventName` that will be fired with the corresponding data when a column/marker/slice is clicked.
 
 ```php
-$columnChartModel = 
+$columnChartModel =
     (new ColumnChartModel())
         ->setTitle('Expenses by Type')
         ->withOnColumnClickEventName('onColumnClick')
     ;
-``` 
- 
- Here we define an `onColumnClick` event that will be fired when a column is clicked in our chart. 
- 
- We can listen to the `onClickEvent` registering a listener in any other Livewire component.
- 
- ```php
+```
+
+Here we define an `onColumnClick` event that will be fired when a column is clicked in our chart.
+
+We can listen to the `onClickEvent` registering a listener in any other Livewire component.
+
+```php
 #[On('onColumnClick')]
 public function handleOnColumnClick($event)
 {
-    // Handle event
-} 
-``` 
+   // Handle event
+}
+```
 
 ## "Reactive" Charts
 
 You can use livewire-charts components as nested components in you Livewire components. Once rendered, charts will
-not automatically react to changes in the `$model` passed in. This is just how Livewire works. 
+not automatically react to changes in the `$model` passed in. This is just how Livewire works.
 
-However, to enable "reactivity" when data passed in changes, you can define a special `$key` 
-to your components so they are fully re-rendered each time the chart data changes. 
+However, to enable "reactivity" when data passed in changes, you can define a special `$key`
+to your components so they are fully re-rendered each time the chart data changes.
 
 Each model class comes with a `reactiveKey()` method that returns a string based on its data. If any of the properties
 are changed, this key will update accordingly and re-render the chart again.
 
-In the following example, a parent component houses both column chart and pie chart and defines a `$model` for each one. 
+In the following example, a parent component houses both column chart and pie chart and defines a `$model` for each one.
 The parent component renders the charts as follows
 
 ```blade
@@ -160,12 +164,12 @@ The parent component renders the charts as follows
     key="{{ $pieChartModel->reactiveKey() }}"
     :pie-chart-model="$pieChartModel"
 />
-``` 
+```
 
- When the parent component changes their respective models, charts will automatically re-render itself.
- 
- ![reactive charts example](https://github.com/asantibanez/livewire-charts/raw/master/reactive-charts-example.gif)
- 
+When the parent component changes their respective models, charts will automatically re-render itself.
+
+![reactive charts example](https://github.com/asantibanez/livewire-charts/raw/master/reactive-charts-example.gif)
+
 ## Charts API
 
 For each chart, a specific model class needs to be used. Here, it is detailed the api available
@@ -174,7 +178,7 @@ for each type of chart.
 ### All
 
 | Method                                  | Description                                                                                                                            |
-|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | setTitle(string $title)                 | Sets chart title                                                                                                                       |
 | setAnimated(boolean $animated)          | Enables/disables animation                                                                                                             |
 | setDataLabelsEnabled(boolean $enabled)  | Enables/disables data labels                                                                                                           |
@@ -191,19 +195,19 @@ for each type of chart.
 
 ### LivewireLineChart
 
-| Method | Description |
-|--------|-------------|
-| multiLine() | Adds multiline support for line chart |
-| singleLine() | Adds single support for line chart |
-| addPoint(string $title, double $value, array $extras = []) | Adds a point to a single line chart. `$extras` is forwarded on click event |
-| addSeriesPoint(string $seriesName, string $title, double $value, array $extras = []) | Adds a point to series to a multi line chart. `$extras` is forwarded on click event |
-| addMarker(string $title, double $value) | Adds a marker point to the line chart. Markers are used to emphasize particular points in the chart (singleLine only) |
-| withOnPointClickEvent(string $eventName) | Event Name that will be fired when a point/marker of the chart is clicked |
+| Method                                                                               | Description                                                                                                           |
+| ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| multiLine()                                                                          | Adds multiline support for line chart                                                                                 |
+| singleLine()                                                                         | Adds single support for line chart                                                                                    |
+| addPoint(string $title, double $value, array $extras = [])                           | Adds a point to a single line chart. `$extras` is forwarded on click event                                            |
+| addSeriesPoint(string $seriesName, string $title, double $value, array $extras = []) | Adds a point to series to a multi line chart. `$extras` is forwarded on click event                                   |
+| addMarker(string $title, double $value)                                              | Adds a marker point to the line chart. Markers are used to emphasize particular points in the chart (singleLine only) |
+| withOnPointClickEvent(string $eventName)                                             | Event Name that will be fired when a point/marker of the chart is clicked                                             |
 
 ### LivewireColumnChart
 
 | Method                                                                                | Description                                                                                |
-|---------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
 | setOpacity(int $opacity)                                                              | Sets columns' opacity                                                                      |
 | setColumnWidth(int $columnWidth)                                                      | Sets columns' width                                                                        |
 | setHorizontal()                                                                       | Displays columns horizontally                                                              |
@@ -218,7 +222,7 @@ for each type of chart.
 ### LivewirePieChart
 
 | Method                                                                    | Description                                                                               |
-|---------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | setOpacity(int $opacity)                                                  | Sets slices' opacity                                                                      |
 | asPie()                                                                   | Displays chart as pie                                                                     |
 | asDonut()                                                                 | Displays chart as donut                                                                   |
@@ -227,33 +231,33 @@ for each type of chart.
 
 ### LivewireAreaChart
 
-| Method | Description |
-|--------|-------------|
+| Method                                                     | Description                                                           |
+| ---------------------------------------------------------- | --------------------------------------------------------------------- |
 | addPoint(string $title, double $value, array $extras = []) | Adds a point to the area chart. `$extras` is forwarded on click event |
-| withOnPointClickEvent(string $eventName) | Event Name that will be fired when a point of the chart is clicked |
-| setXAxisVisible(boolean $visible) | Shows/hides xAxis labels |
-| setYAxisVisible(boolean $visible) | Shows/hides yAxis labels |
+| withOnPointClickEvent(string $eventName)                   | Event Name that will be fired when a point of the chart is clicked    |
+| setXAxisVisible(boolean $visible)                          | Shows/hides xAxis labels                                              |
+| setYAxisVisible(boolean $visible)                          | Shows/hides yAxis labels                                              |
 
 ### LivewireRadarChart
 
-| Method | Description |
-|--------|-------------|
-| addSeries(string $seriesName, string $title, double $value, array $extras = []) | |
-| withOnPointClickEvent(string $eventName) | Event Name that will be fired when a point of the chart is clicked |
+| Method                                                                          | Description                                                        |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| addSeries(string $seriesName, string $title, double $value, array $extras = []) |                                                                    |
+| withOnPointClickEvent(string $eventName)                                        | Event Name that will be fired when a point of the chart is clicked |
 
 ### LivewireTreeMapChart
 
-| Method | Description |
-|--------|-------------|
-| addBlock(string $title, double $value, array $extras = []) | Adds a block to the default series|
-| addSeriesBlock(string $seriesName, string $title, double $value, array $extras = []) | Adds a block to the specified series|
-| withOnBlockClickEvent(string $eventName) | Event Name that will be fired when a block of the chart is clicked |
-| setDistributed(bool $distributed) | Set whether the chart uses distribution or not |
+| Method                                                                               | Description                                                        |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| addBlock(string $title, double $value, array $extras = [])                           | Adds a block to the default series                                 |
+| addSeriesBlock(string $seriesName, string $title, double $value, array $extras = []) | Adds a block to the specified series                               |
+| withOnBlockClickEvent(string $eventName)                                             | Event Name that will be fired when a block of the chart is clicked |
+| setDistributed(bool $distributed)                                                    | Set whether the chart uses distribution or not                     |
 
 ### LivewireRadialChart
 
 | Method                                                                         | Description                                                      |
-|--------------------------------------------------------------------------------|------------------------------------------------------------------|
+| ------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
 | addBar(string $title, double $value, string $color = null, array $extras = []) | Adds a bar to the default series                                 |
 | withOnBarClickEvent(string $eventName)                                         | Event Name that will be fired when a bar of the chart is clicked |
 | showTotal()                                                                    | Show the total percetage to the graph                            |
@@ -262,16 +266,15 @@ for each type of chart.
 ## Advanced Usage - Integrating Scripts
 
 The directive `@livewireChartsScripts` adds a `script` tag that includes `public/vendor/livewire-charts/app.js`.
-If you want to include this script in your build system, you can export the package scripts 
+If you want to include this script in your build system, you can export the package scripts
 with `php artisan vendor:publish` and selecting `livewire-charts:scripts`. This will export `js/vendor/livewire-charts`
 inside your resources folder. You can then adjust imports as you see fit in your project.
 
->Note: You must remove @livewireChartsScripts directive so it doesn't clash with the scripts in your build system. 
-
+> Note: You must remove @livewireChartsScripts directive so it doesn't clash with the scripts in your build system.
 
 ## Advanced Usage - Custom Json Configs
 
-The `setJsonConfig()` method on every chart allows adding custom Apex properties not provided first hand by the package. 
+The `setJsonConfig()` method on every chart allows adding custom Apex properties not provided first hand by the package.
 This means that any chart property supported by Apex chart can be passed down using this method.
 
 ```php
@@ -283,8 +286,8 @@ $chart->setJsonConfig([
 ]);
 ```
 
->Note: If you want to add nested properties, you can use dot (.) notation for this matter.
- 
+> Note: If you want to add nested properties, you can use dot (.) notation for this matter.
+
 You can even pass down simple JS functions. For example, for formatting you can pass down your own closure
 
 ```php
@@ -298,17 +301,17 @@ $chart->setJsonConfig([
 Chart components must be placed inside a container with fixed height. This is because the chart will use all the given
 vertical space. A fixed height is needed to render properly.
 
- ```blade
+```blade
 <div style="height: 32rem;">
-    <livewire:livewire-column-chart .../>
+   <livewire:livewire-column-chart .../>
 </div>
- ``` 
+```
 
->Note: if a fixed height is not given, the chart will grow vertically infinitely. That's not what we want, right?
+> Note: if a fixed height is not given, the chart will grow vertically infinitely. That's not what we want, right?
 
 ## Testing
 
-``` bash
+```bash
 composer test
 ```
 
